@@ -77,7 +77,7 @@ class NetFlow(object):
         data_list = list()
 
         for key in feed_dict:
-            data_list.append(feed_dict[key])
+            print(key.op.name, np.sum(feed_dict[key]))
         #print(np.sum(data_list[1][0] > 0.1))
         #print(data_list[1][0].max())
         #cv2.imshow("image", data_list[0][0])
@@ -118,7 +118,7 @@ class NetFlow(object):
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
-                #self.check_feed_dict(feed_dict)
+                self.check_feed_dict(feed_dict)
 
                 _, loss_v = sess.run([self.train_op, 
                                     self.loss], feed_dict)
