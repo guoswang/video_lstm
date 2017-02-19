@@ -62,6 +62,7 @@ class NetFlow(object):
         mask_ph_list = self.data_ph.get_mask()
 
         feed_dict = dict()
+
         for i in range(unroll_num):
             feed_dict[input_ph_list[i]] = input_v[i]
             feed_dict[label_ph_list[i]] = label_v[i] * 100
@@ -118,7 +119,7 @@ class NetFlow(object):
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
-                self.check_feed_dict(feed_dict)
+                #self.check_feed_dict(feed_dict)
 
                 _, loss_v = sess.run([self.train_op, 
                                     self.loss], feed_dict)

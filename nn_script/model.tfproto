@@ -32,6 +32,10 @@ lstm_cell_dim: 10
 lstm_cell_layer: 3
 unroll_num: 5
 
+# becasue the density value is too small
+# so the scale needed to be adjusted
+desmap_scale: 100
+
 leaky_param:0.01
 weight_decay:0.0004
 
