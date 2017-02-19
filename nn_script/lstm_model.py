@@ -200,16 +200,17 @@ class Model(ModelAbs):
         return l2_loss
 
     def _add_image_sum(self, input_img, label, mask):
-        concat_1 = iuf.merge_image(2, input_img)
-        concat_2 = iuf.merge_image(2, label)
-        deconv_img_list = [img[-1] for img in self.predict_list]
-        concat_3 = iuf.merge_image(2, deconv_img_list)
-        concat_4 = iuf.merge_image(2, mask)
+        with tf.variable_scope("image_sum"):
+            concat_1 = iuf.merge_image(2, input_img)
+            concat_2 = iuf.merge_image(2, label)
+            deconv_img_list = [img[-1] for img in self.predict_list]
+            concat_3 = iuf.merge_image(2, deconv_img_list)
+            concat_4 = iuf.merge_image(2, mask)
 
-        image_sum = iuf.merge_image(1, [concat_1, concat_2, 
-                    concat_3, concat_4])
+            image_sum = iuf.merge_image(1, [concat_1, concat_2, 
+                        concat_3, concat_4])
 
-        tf.add_to_collection("image_to_write", image_sum)
+            tf.add_to_collection("image_to_write", image_sum)
         
 
     def model_loss(self, data_ph, model_params):
