@@ -136,7 +136,6 @@ class NetFlow(object):
                                 i == self.model_params["max_training_iter"] - 1):
                     sf.save_model(sess, self.saver,
                                   self.model_params["model_dir"],i)
-                exit(1)
                     
         else:
             for i in range(self.model_params["test_iter"]):
