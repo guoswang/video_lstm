@@ -63,9 +63,11 @@ class NetFlow(object):
 
         feed_dict = dict()
 
+        desmap_scale = self.model_params["desmap_scale"]
+
         for i in range(unroll_num):
             feed_dict[input_ph_list[i]] = input_v[i]
-            feed_dict[label_ph_list[i]] = label_v[i] * 100
+            feed_dict[label_ph_list[i]] = label_v[i] * desmap_scale
             feed_dict[mask_ph_list[i]] = mask_v[i]
             #feed_dict[self.data_ph.get_input()] = input_v
             #feed_dict[self.data_ph.get_label()] = label_v * 100
