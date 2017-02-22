@@ -187,16 +187,19 @@ class Model(ModelAbs):
     
     def _model_infer_to_count(self, lstm_output, model_params):
         wd = model_params["weight_decay"]
-        count_list = list()
-        with tf.variable_scope("count_fc"):
-            for i , output in enumerate(lstm_output):
-                if i != 0:
-                    tf.get_variable_scope().reuse_variables()
+        #count_list = list()
+        #with tf.variable_scope("count_fc"):
+        #    for i , output in enumerate(lstm_output):
+        #        if i != 0:
+        #            tf.get_variable_scope().reuse_variables()
 
-                count = mf.fully_connected_layer(output, 1, wd, "fc")
-                count_list.append(count)
+        #        count = mf.fully_connected_layer(output, 1, wd, "fc")
+        #        count_list.append(count)
+        #return count_list
 
-        return count_list
+        count = mf.fully_connected_layer(lstm_output[-1], 1, wd, "fc")
+
+        return count
         
     def _image_l2_loss(self, label, mask, predict_list, index, model_params):
         """
@@ -243,21 +246,27 @@ class Model(ModelAbs):
 
         with tf.variable_scope("loss"):
 
-            count_loss_list = list()
+            #count_loss_list = list()
             image_loss_list = list()
 
             for i in range(unroll_num):
-                count_label = tf.reduce_sum(label[i], [1,2,3])/desmap_scale
-                count_loss = mf.l2_loss(self.count[i], count_label, 
-                            "MEAN", "count_loss_%d"%i)
+                #count_label = tf.reduce_sum(label[i], [1,2,3])/desmap_scale
+                #count_loss = mf.l2_loss(self.count[i], count_label, 
+                #            "MEAN", "count_loss_%d"%i)
 
-                count_loss_list.append(count_loss)
+                #count_loss_list.append(count_loss)
 
                 image_loss = self._image_l2_loss(label[i], mask[i], 
                             self.predict_list[i], i, model_params)
                 image_loss_list.append(image_loss)
 
-            self.l2_loss = tf.add_n(count_loss_list)
+            #self.l2_loss = tf.add_n(count_loss_list)
+
+            count_label = tf.reduce_sum(label[-1], [1,2,3])/desmap_scale
+            count_loss = mf.l2_loss(self.count, count_label, 
+                        "MEAN", "count_loss")
+
+            self.l2_loss = count_loss
             tf.add_to_collection("losses", self.l2_loss)
 
             self.image_loss = tf.add_n(image_loss_list)

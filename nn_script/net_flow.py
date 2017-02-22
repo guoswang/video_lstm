@@ -30,6 +30,7 @@ class NetFlow(object):
         self.model = model(self.data_ph, model_params)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
+        self.image_loss = self.model.get_image_loss()
         self.train_op = self.model.get_train_op()
 
     @staticmethod
@@ -123,17 +124,28 @@ class NetFlow(object):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
                 #self.check_feed_dict(feed_dict)
 
-                _, loss_v = sess.run([self.train_op, 
-                                    self.loss], feed_dict)
-
+                _, tl2_loss_v, timage_loss_v = sess.run([self.train_op, 
+                                    self.l2_loss, self.image_loss], feed_dict)
                 if i % self.model_params["test_per_iter"] == 0:
+
                     feed_dict = self.get_feed_dict(sess, is_train=False)
-                    l2_loss_v, summ_v = sess.run([self.l2_loss, self.summ], feed_dict)
-                    print("i: %d, train_loss: %.4f, test loss: %.4f" %
-                          (i, loss_v, l2_loss_v))
+                    l2_loss_v, image_loss_v, summ_v = sess.run([self.l2_loss, 
+                                self.image_loss, self.summ], feed_dict)
+
+                    tl2_loss_v = np.sqrt(tl2_loss_v)
+                    l2_loss_v = np.sqrt(l2_loss_v)
+
+                    print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
+                                "test_count_loss: %.2f, test_image_loss: %.2f" %
+                          (i, tl2_loss_v, timage_loss_v, l2_loss_v, image_loss_v))
                     self.sum_writer.add_summary(summ_v, i)
-                    sf.add_value_sum(self.sum_writer, loss_v, "train_loss", i)
-                    sf.add_value_sum(self.sum_writer, l2_loss_v, "test_loss", i)
+                    sf.add_value_sum(self.sum_writer, timage_loss_v, 
+                                    "train_image_loss", i)
+                    sf.add_value_sum(self.sum_writer, tl2_loss_v, "train_l2_loss", i)
+                    sf.add_value_sum(self.sum_writer, image_loss_v, 
+                                    "test_image_loss", i)
+                    sf.add_value_sum(self.sum_writer, l2_loss_v, "test_l2_loss", i)
+
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
                                 i == self.model_params["max_training_iter"] - 1):
                     sf.save_model(sess, self.saver,
