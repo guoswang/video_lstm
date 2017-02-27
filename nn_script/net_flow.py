@@ -118,7 +118,7 @@ class NetFlow(object):
         self.init_var(sess)
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
-
+        batch_size = self.model_params["batch_size"]
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
@@ -132,20 +132,22 @@ class NetFlow(object):
                     l2_loss_v, image_loss_v, summ_v = sess.run([self.l2_loss, 
                                 self.image_loss, self.summ], feed_dict)
 
-                    tl2_loss_v = np.sqrt(tl2_loss_v)
-                    l2_loss_v = np.sqrt(l2_loss_v)
+                    tcount_diff = np.sqrt(tl2_loss_v * batch_size) / batch_size
+                    count_diff = np.sqrt(l2_loss_v * batch_size) / batch_size
 
                     print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
                                 "test_count_loss: %.2f, test_image_loss: %.2f" %
-                          (i, tl2_loss_v, timage_loss_v, l2_loss_v, image_loss_v))
+                          (i, tcount_diff, timage_loss_v, l2_loss_v, image_loss_v))
 
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, timage_loss_v, 
                                     "train_image_loss", i)
-                    sf.add_value_sum(self.sum_writer, tl2_loss_v, "train_l2_loss", i)
+                    sf.add_value_sum(self.sum_writer, tcount_diff, 
+                                                    "train_count_diff", i)
                     sf.add_value_sum(self.sum_writer, image_loss_v, 
                                     "test_image_loss", i)
-                    sf.add_value_sum(self.sum_writer, l2_loss_v, "test_l2_loss", i)
+                    sf.add_value_sum(self.sum_writer, count_diff, 
+                                                    "test_count_diff", i)
 
                 if i != 0 and (i % self.model_params["save_per_iter"] == 0 or \
                                 i == self.model_params["max_training_iter"] - 1):

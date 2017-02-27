@@ -216,8 +216,8 @@ class Model(ModelAbs):
             l2_loss = mf.image_l2_loss(deconv, label, 
                         "image_loss_%d_%d"%(index, i))
             l2_loss_list.append(l2_loss)
-            count_diff = mf.count_diff(deconv, label, "count_diff_%d"%i)
-            tf.summary.scalar("count_diff_%d"%i, count_diff)
+            count_diff = mf.count_diff(deconv, label, "count_diff_%d_%d"%(index, i))
+            tf.summary.scalar("count_diff_%d_%d"%(index,i), count_diff)
             #tf.add_to_collection("losses", l2_loss)
 
         l2_loss = tf.add_n(l2_loss_list)
