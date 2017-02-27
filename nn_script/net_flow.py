@@ -138,6 +138,7 @@ class NetFlow(object):
                     print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
                                 "test_count_loss: %.2f, test_image_loss: %.2f" %
                           (i, tl2_loss_v, timage_loss_v, l2_loss_v, image_loss_v))
+
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, timage_loss_v, 
                                     "train_image_loss", i)
