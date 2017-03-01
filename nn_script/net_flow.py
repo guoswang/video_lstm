@@ -119,6 +119,8 @@ class NetFlow(object):
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
         batch_size = self.model_params["batch_size"]
+        unroll_num = self.model_params["unroll_num"]
+
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
@@ -132,8 +134,10 @@ class NetFlow(object):
                     l2_loss_v, image_loss_v, summ_v = sess.run([self.l2_loss, 
                                 self.image_loss, self.summ], feed_dict)
 
-                    tcount_diff = np.sqrt(tl2_loss_v * batch_size) / batch_size
-                    count_diff = np.sqrt(l2_loss_v * batch_size) / batch_size
+                    tcount_diff = np.sqrt(tl2_loss_v / unroll_num * batch_size) \
+                                                    / batch_size
+                    count_diff = np.sqrt(l2_loss_v /unroll_num * batch_size) \
+                                                    / batch_size
 
                     print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
                                 "test_count_loss: %.2f, test_image_loss: %.2f" %
