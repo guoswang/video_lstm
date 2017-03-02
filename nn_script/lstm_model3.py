@@ -211,7 +211,7 @@ class Model(ModelAbs):
             mask: [b, h, w, c]
             predict_list: list of [b, h, w, c]
         """
-
+        desmap_scale = model_params["desmap_scale"]
         l2_loss_list = list()
         for i, deconv in enumerate(predict_list):
             deconv = self._filter_mask(deconv, mask)
@@ -219,7 +219,8 @@ class Model(ModelAbs):
             l2_loss = mf.image_l2_loss(deconv, label, 
                         "image_loss_%d_%d"%(index, i))
             l2_loss_list.append(l2_loss)
-            count_diff = mf.count_diff(deconv, label, "count_diff_%d_%d"%(index, i))
+            count_diff = mf.count_diff(deconv, 
+                        label, "count_diff_%d_%d"%(index, i)) / desmap_scale
             tf.summary.scalar("image_count_diff/%d_%d"%(index,i), count_diff)
             #tf.add_to_collection("losses", l2_loss)
 
@@ -279,19 +280,18 @@ class Model(ModelAbs):
 
                 count_l1_loss_list.append(count_l1_loss)
 
-
                 image_loss = self._image_l2_loss(label[i], mask[i], 
                             self.predict_list[i], i, model_params)
 
                 image_loss_list.append(image_loss)
 
-            self.l1_loss = tf.add_n(count_l1_loss_list)
+            self.l1_loss = tf.reduce_mean(count_l1_loss_list)
             tf.add_to_collection("losses", self.l1_loss)
 
-            self.l2_loss = tf.add_n(count_loss_list)
+            self.l2_loss = tf.reduce_mean(count_loss_list)
             tf.add_to_collection("losses", self.l2_loss)
 
-            self.image_loss = tf.add_n(image_loss_list)
+            self.image_loss = tf.reduce_mean(image_loss_list)
             tf.add_to_collection("losses", self.image_loss)
 
             self.loss = tf.add_n(tf.get_collection('losses'), name='total_loss')

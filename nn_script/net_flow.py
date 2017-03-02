@@ -137,8 +137,11 @@ class NetFlow(object):
                                 self.l2_loss, self.image_loss, 
                                 self.l1_loss, self.summ], feed_dict)
 
-                    tcount_diff = tl1_loss_v / unroll_num
-                    count_diff = l1_loss_v / unroll_num
+                    tcount_diff = tl1_loss_v 
+                    count_diff = l1_loss_v 
+
+                    timage_loss_v /= desmap_scale
+                    image_loss_v /= desmap_scale
 
                     print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
                                 "test_count_loss: %.2f, test_image_loss: %.2f" %
