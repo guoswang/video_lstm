@@ -260,6 +260,10 @@ class Model(ModelAbs):
                 count_label = tf.reduce_sum(label[i], [1,2,3])/desmap_scale
                 count_infer = tf.reduce_sum(self.count[i], 1)
                 
+                count_loss = mf.l2_loss(count_infer, count_label, 
+                            "MEAN", "count_loss_%d"%i)
+                count_loss_list.append(count_loss)
+
                 tf.summary.scalar("count_diff/%d"%i,
                                     mf.l1_loss(count_infer,
                                     count_label, "MEAN", "l1_loss"))
@@ -269,12 +273,7 @@ class Model(ModelAbs):
 
                 tf.summary.scalar("count_infer/%d"%i,
                                     tf.reduce_mean(count_infer))
-
-                count_loss = mf.l2_loss(count_infer, count_label, 
-                            "MEAN", "count_loss_%d"%i)
             
-                count_loss_list.append(count_loss)
-
                 count_l1_loss = mf.l1_loss(count_infer, count_label,
                             "MEAN", "count_loss_%d"%i)
 
