@@ -261,6 +261,11 @@ class Model(ModelAbs):
                 tf.summary.scalar("count_diff/%d"%i,
                                     mf.l1_loss(count_infer,
                                     count_label, "MEAN", "l1_loss"))
+                tf.summary.scalar("count_label/%d"%i,
+                                    tf.reduce_mean(count_label))
+
+                tf.summary.scalar("count_infer/%d"%i,
+                                    tf.reduce_mean(count_infer))
 
                 count_loss = mf.l2_loss(count_infer, count_label, 
                             "MEAN", "count_loss_%d"%i)
