@@ -30,6 +30,7 @@ class NetFlow(object):
         self.model = model(self.data_ph, model_params)
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
+        self.l1_loss = self.model.get_l1_loss()
         self.image_loss = self.model.get_image_loss()
         self.train_op = self.model.get_train_op()
 
@@ -126,18 +127,18 @@ class NetFlow(object):
                 feed_dict = self.get_feed_dict(sess, is_train=True)
                 #self.check_feed_dict(feed_dict)
 
-                _, tl2_loss_v, timage_loss_v = sess.run([self.train_op, 
-                                    self.l2_loss, self.image_loss], feed_dict)
+                _, tl2_loss_v, timage_loss_v, tl1_loss_v = sess.run([self.train_op, 
+                                    self.l2_loss, self.image_loss, self.l1_loss],
+                                    feed_dict)
                 if i % self.model_params["test_per_iter"] == 0:
 
                     feed_dict = self.get_feed_dict(sess, is_train=False)
-                    l2_loss_v, image_loss_v, summ_v = sess.run([self.l2_loss, 
-                                self.image_loss, self.summ], feed_dict)
+                    l2_loss_v, image_loss_v, l1_loss_v, summ_v = sess.run([
+                                self.l2_loss, self.image_loss, 
+                                self.l1_loss, self.summ], feed_dict)
 
-                    tcount_diff = np.sqrt(tl2_loss_v / unroll_num * batch_size) \
-                                                    / batch_size
-                    count_diff = np.sqrt(l2_loss_v /unroll_num * batch_size) \
-                                                    / batch_size
+                    tcount_diff = tl1_loss_v / unroll_num
+                    count_diff = l1_loss_v / unroll_num
 
                     print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
                                 "test_count_loss: %.2f, test_image_loss: %.2f" %
