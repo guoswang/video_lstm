@@ -121,6 +121,7 @@ class NetFlow(object):
         threads = tf.train.start_queue_runners(coord=coord, sess=sess)
         batch_size = self.model_params["batch_size"]
         unroll_num = self.model_params["unroll_num"]
+        desmap_scale = self.model_params["desmap_scale"]
 
         if self.load_train:
             for i in range(self.model_params["max_training_iter"]):
