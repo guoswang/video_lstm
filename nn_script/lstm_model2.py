@@ -32,10 +32,6 @@ class Model(ModelAbs):
                 initial_state = cell_initial_state)
 
         self.output = output
-        for i, o in enumerate(self.output):
-            tf.summary.scalar("lstm_output_%d"%i, 
-                            tf.reduce_sum(o))
-
 
         count = self._model_infer_to_count(output, model_params)
         self.count = count
@@ -56,9 +52,6 @@ class Model(ModelAbs):
                                 input_ph, model_params)
                 
                 fc = tf.reduce_sum(fc, 1, True) / desmap_scale
-                tf.summary.scalar("density_map_sum_%d"%i, 
-                                tf.reduce_sum(fc))
-
                 fc_list.append(fc)
                 predict_list.append(deconv_list)
 
@@ -231,7 +224,7 @@ class Model(ModelAbs):
                         "image_loss_%d_%d"%(index, i))
             l2_loss_list.append(l2_loss)
             count_diff = mf.count_diff(deconv, label, "count_diff_%d_%d"%(index, i))
-            tf.summary.scalar("count_diff_%d_%d"%(index,i), count_diff)
+            tf.summary.scalar("image_count_diff/%d_%d"%(index,i), count_diff)
             #tf.add_to_collection("losses", l2_loss)
 
         l2_loss = tf.add_n(l2_loss_list)
@@ -267,13 +260,21 @@ class Model(ModelAbs):
 
             for i in range(unroll_num):
                 count_label = tf.reduce_sum(label[i], [1,2,3])/desmap_scale
-                count_loss = mf.l2_loss(self.count[i], count_label, 
+                count_infer = tf.reduce_sum(self.count[i], 1)
+                
+                 
+                tf.summary.scalar("count_diff/%d"%i,
+                                    mf.l1_loss(count_infer,
+                                    count_label, "MEAN", "l1_loss"))
+
+                count_loss = mf.l2_loss(count_infer, count_label, 
                             "MEAN", "count_loss_%d"%i)
 
                 count_loss_list.append(count_loss)
 
                 image_loss = self._image_l2_loss(label[i], mask[i], 
                             self.predict_list[i], i, model_params)
+
                 image_loss_list.append(image_loss)
 
             self.l2_loss = tf.add_n(count_loss_list)
