@@ -50,8 +50,8 @@ class Model(ModelAbs):
                     tf.get_variable_scope().reuse_variables()
                 deconv_list, fc = self._model_infer_cnn_single(
                                 input_ph, model_params)
-
-                fc = tf.reduce_sum(fc, 1, True) / desmap_scale
+                
+                #fc = tf.reduce_sum(fc, 1, True) / desmap_scale
                 fc_list.append(fc)
                 predict_list.append(deconv_list)
 
@@ -161,14 +161,6 @@ class Model(ModelAbs):
                     64, wd, "deconv2")
         print(deconv2)
 
-        #deconv1 = mf.deconvolution_2d_layer(conv6, [3, 3, 256, 512], 
-        #            [2, 2], [b, 111, 111, 256], 'VALID', wd, 'deconv1')
-        #print(deconv1)
-
-        #deconv2 = mf.deconvolution_2d_layer(deconv1, [3, 3, 64, 256], 
-        #            [2, 2], [b, 224, 224, 64], 'VALID', wd, 'deconv2')
-
-        #print(deconv2)
         conv7 = mf.add_leaky_relu(mf.convolution_2d_layer(
             deconv2, [1, 1, 64, 1], [1, 1],
             "SAME", wd, "conv7"), leaky_param)
@@ -191,16 +183,20 @@ class Model(ModelAbs):
         return tensor
     
     def _model_infer_to_count(self, lstm_output, model_params):
-        return self.output
-
         wd = model_params["weight_decay"]
+        desmap_scale = model_params["desmap_scale"]
+
         count_list = list()
         with tf.variable_scope("count_fc"):
             for i , output in enumerate(lstm_output):
                 if i != 0:
                     tf.get_variable_scope().reuse_variables()
 
-                count = mf.fully_connected_layer(output, 1, wd, "fc")
+                count_bias = mf.fully_connected_layer(output, 1, wd, "fc")
+                image_sum = tf.expand_dims(tf.reduce_sum(
+                                self.predict_list[i][-1], [1,2,3]),1)
+                count = count_bias + image_sum
+
                 count_list.append(count)
         return count_list
 
