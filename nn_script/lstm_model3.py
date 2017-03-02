@@ -285,8 +285,8 @@ class Model(ModelAbs):
 
                 image_loss_list.append(image_loss)
 
-            self.l1_loss = tf.add_n(count_l1_loss_list)
-            tf.add_to_collection("losses", self.l1_loss)
+            self.l1_loss = tf.reduce_mean(count_l1_loss_list)
+            #tf.add_to_collection("losses", self.l1_loss)
 
             self.l2_loss = tf.add_n(count_loss_list)
             tf.add_to_collection("losses", self.l2_loss)
