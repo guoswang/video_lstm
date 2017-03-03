@@ -194,8 +194,12 @@ class Model(ModelAbs):
 
                 count_bias = mf.fully_connected_layer(output, 1, wd, "fc")
                 image_sum = tf.expand_dims(tf.reduce_sum(
-                                self.predict_list[i][-1], [1,2,3]),1)
+                                self.predict_list[i][-1], [1,2,3]),1)/desmap_scale
+
                 count = count_bias + image_sum / desmap_scale
+
+                tf.summary.scalar("check/image_sum/%d"%(i), image_sum)
+                tf.summary.scalar("check/count_bias/%d"%(i), count_bias)
 
                 count_list.append(count)
         return count_list
