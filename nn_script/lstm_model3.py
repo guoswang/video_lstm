@@ -194,10 +194,15 @@ class Model(ModelAbs):
                     tf.get_variable_scope().reuse_variables()
 
                 count_bias = mf.fully_connected_layer(output, 1, wd, "fc")
+
+                count_bias_decay = tf.mul(tf.nn.l2_loss(count_bias), 
+                            wd, name='bias_decay_%d'%i)
+                tf.add_to_collection("losses", count_bias_decay)
+
                 image_sum = tf.expand_dims(tf.reduce_sum(
                                 self.predict_list[i][-1], [1,2,3]),1)/desmap_scale
 
-                count = count_bias + image_sum / desmap_scale
+                count = count_bias + image_sum
 
                 tf.summary.scalar("check/image_sum/%d"%(i), 
                                 tf.reduce_mean(image_sum))
