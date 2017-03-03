@@ -52,7 +52,8 @@ class Model(ModelAbs):
                                 input_ph, model_params)
                 
                 #fc = tf.reduce_sum(fc, 1, True) / desmap_scale
-                fc_list.append(fc)
+
+                fc_list.append(fc/desmap_scale)
                 predict_list.append(deconv_list)
 
         return predict_list, fc_list
