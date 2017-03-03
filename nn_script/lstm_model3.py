@@ -199,9 +199,9 @@ class Model(ModelAbs):
                 count = count_bias + image_sum / desmap_scale
 
                 tf.summary.scalar("check/image_sum/%d"%(i), 
-                                tf.reduce_sum(image_sum))
+                                tf.reduce_mean(image_sum))
                 tf.summary.scalar("check/count_bias/%d"%(i), 
-                                tf.reduce_sum(count_bias))
+                                tf.reduce_mean(count_bias))
 
                 count_list.append(count)
         return count_list
