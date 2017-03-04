@@ -9,7 +9,7 @@ if __name__ == "__main__":
     else:
         model_proto_file = "model.tfproto"
 
-    model_params = rp.load_proto("model.tfproto")
+    model_params = rp.load_proto(model_proto_file)
     file_io.check_exist(model_params["train_file_name"]) 
     file_io.check_exist(model_params["test_file_name"]) 
 
