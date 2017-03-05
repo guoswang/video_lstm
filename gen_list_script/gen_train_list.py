@@ -3,8 +3,6 @@ import random
 from TensorflowToolbox.utility import file_io
 import sys
 
-
-
 def file_list_to_list(file_list, unroll_num):
     start_index = unroll_num
     end_index = len(file_list)
