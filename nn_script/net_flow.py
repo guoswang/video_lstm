@@ -4,6 +4,7 @@ from TensorflowToolbox.utility import file_io
 import tensorflow as tf
 from TensorflowToolbox.model_flow import save_func as sf
 from TensorflowToolbox.utility import utility_func as uf 
+from TensorflowToolbox.utility import result_obj as ro
 import cv2
 import numpy as np
 import os
@@ -31,6 +32,8 @@ class NetFlow(object):
         self.loss = self.model.get_loss()
         self.l2_loss = self.model.get_l2_loss()
         self.l1_loss = self.model.get_l1_loss()
+        self.count = self.model.get_count()
+        self.label_count = self.model.get_label_count()
         self.image_loss = self.model.get_image_loss()
         self.train_op = self.model.get_train_op()
 
@@ -74,6 +77,8 @@ class NetFlow(object):
             #feed_dict[self.data_ph.get_input()] = input_v
             #feed_dict[self.data_ph.get_label()] = label_v * 100
             #feed_dict[self.data_ph.get_mask()] = mask_v
+
+        self.file_line = file_line_v
 
         return feed_dict
 
@@ -161,10 +166,29 @@ class NetFlow(object):
                                   self.model_params["model_dir"],i)
                     
         else:
-            for i in range(self.model_params["test_iter"]):
+            file_len = file_io.get_file_length(self.model_params["test_file_name"])
+            batch_size = self.model_params["batch_size"]
+            test_iter = int(file_len / batch_size) + 1
+            result_file_name = self.model_params["result_file_name"]
+            result_obj = ro.ResultObj(result_file_name)
+            for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
-                loss_v = sess.run(self.loss, feed_dict)
-                print(loss_v)
+                loss_v, count_v, label_count_v = sess.run([self.loss, self.count, 
+                        self.label_count], feed_dict)
+
+                file_line = [f.decode("utf-8").split(" ")[:unroll_num] \
+                            for f in self.file_line]
+
+                label_count_v = result_obj.vectorize_nparray(label_count_v)
+                count_v = result_obj.vectorize_nparray(count_v)
+                file_line = result_obj.vectorize_list(file_line)
+
+                label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
+                count_v = result_obj.float_to_str(count_v, "%.2f")
+
+                result_obj.add_to_list(file_line, label_count_v, count_v)
+
+            result_obj.save_to_file(True)
 
         coord.request_stop()
         coord.join(threads)

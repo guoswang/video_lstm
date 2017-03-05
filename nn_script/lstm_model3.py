@@ -268,10 +268,16 @@ class Model(ModelAbs):
             image_loss_list = list()
             count_l1_loss_list = list()
 
+            count_label_list = list()
+            count_infer_list = list()
+
             for i in range(unroll_num):
                 count_label = tf.reduce_sum(label[i], [1,2,3])/desmap_scale
                 count_infer = tf.reduce_sum(self.count[i], 1)
                 
+                count_label_list.append(count_label)
+                count_infer_list.append(count_infer)
+
                 count_loss = mf.l2_loss(count_infer, count_label, 
                             "MEAN", "count_loss_%d"%i)
                 count_loss_list.append(count_loss)
@@ -295,6 +301,10 @@ class Model(ModelAbs):
                             self.predict_list[i], i, model_params)
 
                 image_loss_list.append(image_loss)
+
+
+            self.count_label_list = count_label_list
+            self.count_infer_list = count_infer_list
 
             self.l1_loss = tf.reduce_mean(count_l1_loss_list)
             #tf.add_to_collection("losses", self.l1_loss)
@@ -328,4 +338,10 @@ class Model(ModelAbs):
 
     def get_image_loss(self):
         return self.image_loss
+
+    def get_count(self):
+        return self.count_infer_list
+
+    def get_label_count(self):
+        return self.count_label_list
 
