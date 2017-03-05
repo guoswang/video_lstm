@@ -50,6 +50,6 @@ if __name__ == "__main__":
     test_list = file_list_to_list(test_list, unroll_num):
     
     file_io.save_file(train_list, file_list_dir + save_train_file_name, True)
-    file_io.save_file(test_list, file_list_dir + save_train_file_name, True)
+    file_io.save_file(test_list, file_list_dir + save_test_file_name, True)
     
     
