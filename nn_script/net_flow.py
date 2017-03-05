@@ -179,9 +179,10 @@ class NetFlow(object):
                 file_line = [f.decode("utf-8").split(" ")[:unroll_num] \
                             for f in self.file_line]
 
+                file_line = result_obj.vectorize_list(file_line)
+
                 label_count_v = result_obj.vectorize_nparray(label_count_v)
                 count_v = result_obj.vectorize_nparray(count_v)
-                file_line = result_obj.vectorize_list(file_line)
 
                 label_count_v = result_obj.float_to_str(label_count_v, "%.2f")
                 count_v = result_obj.float_to_str(count_v, "%.2f")
