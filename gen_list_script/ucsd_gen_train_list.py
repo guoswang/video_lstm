@@ -31,7 +31,13 @@ def file_list_to_train_list(file_list):
     return file_list
 
 def reverse_copy_list(image_list):
-    reverse_image_list = [" ".join(f.split(" ").reverse()0 for f in image_list]
+    reverse_image_list = list()
+    for f in image_list:
+        f_l = f.split(" ")
+        f_l.reverse()
+        f_s = " ".join(f_l)
+        reverse_image_list.append(f_s)
+
     return reverse_image_list
 
 if __name__ == "__main__":
@@ -52,13 +58,11 @@ if __name__ == "__main__":
 
     reverse_list = reverse_copy_list(image_list)
 
-    print(image_list[0])
-    print(reverse_list[0])
-    exit(1)
-
     file_list = file_list_to_train_list(image_list)
+
+    reverse_file_list = file_list_to_train_list(reverse_list)
     
-    train_list = file_list[600:1400]
+    train_list = file_list[600:1400] + reverse_file_list[600:1400]
 
     test_list = file_list[0:600] + file_list[1400:]
     
