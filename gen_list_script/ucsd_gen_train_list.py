@@ -40,14 +40,13 @@ if __name__ == "__main__":
     
     image_list = file_io.get_listfile(ucsd_image_path, image_ext)
     image_list.sort()
-    
+    image_list = file_list_to_list(image_list, unroll_num) 
+
     file_list = file_list_to_train_list(image_list)
     
     train_list = file_list[600:1400]
-    train_list = file_list_to_list(train_list, unroll_num)
 
     test_list = file_list[0:600] + file_list[1400:]
-    test_list = file_list_to_list(test_list, unroll_num)
     
     file_io.save_file(train_list, file_list_dir + save_train_file_name, True)
     file_io.save_file(test_list, file_list_dir + save_test_file_name, True)
