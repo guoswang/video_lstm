@@ -20,6 +20,5 @@ if __name__ == "__main__":
         n, label, infer = f.split(" ")
         label_list.append(float(label)) 
         infer_list.append(float(infer))
-
     mae_v = mae(np.array(label_list), np.array(infer_list))
     print(mae_v)

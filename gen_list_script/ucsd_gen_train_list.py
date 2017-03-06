@@ -30,6 +30,10 @@ def file_list_to_train_list(file_list):
     
     return file_list
 
+def reverse_copy_list(image_list):
+    reverse_image_list = [" ".join(f.split(" ").reverse()0 for f in image_list]
+    return reverse_image_list
+
 if __name__ == "__main__":
     image_ext = ".jpg"
     desmap_ext = ".desmap"
@@ -45,6 +49,12 @@ if __name__ == "__main__":
     image_list = file_io.get_listfile(ucsd_image_path, image_ext)
     image_list.sort()
     image_list = file_list_to_list(image_list, unroll_num) 
+
+    reverse_list = reverse_copy_list(image_list)
+
+    print(image_list[0])
+    print(reverse_list[0])
+    exit(1)
 
     file_list = file_list_to_train_list(image_list)
     
