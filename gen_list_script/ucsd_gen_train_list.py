@@ -62,7 +62,8 @@ if __name__ == "__main__":
 
     reverse_file_list = file_list_to_train_list(reverse_list)
     
-    train_list = file_list[600:1400] + reverse_file_list[600:1400]
+    train_list = reverse_file_list[600:1400]
+    #file_list[600:1400] + reverse_file_list[600:1400]
 
     test_list = file_list[0:600] + file_list[1400:]
     
