@@ -149,7 +149,7 @@ class NetFlow(object):
                     print_string = \
                         "i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "\
                         "test_count_loss: %.2f, test_image_loss: %.2f" %\
-                          (i, tcount_diff, timage_loss_v, count_diff, image_loss_v))
+                          (i, tcount_diff, timage_loss_v, count_diff, image_loss_v)
 
                     print(print_string)
                    
