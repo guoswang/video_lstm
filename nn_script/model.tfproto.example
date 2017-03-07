@@ -62,6 +62,7 @@ max_training_iter:10
 test_per_iter:50
 save_per_iter: 200
 train_log_dir:logs/
+string_log_name: string_logs.txt
 model_dir:models/
 restore_model:False
 restore_model_name:None

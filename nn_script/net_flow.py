@@ -146,9 +146,16 @@ class NetFlow(object):
                     tcount_diff = tl1_loss_v 
                     count_diff = l1_loss_v 
 
-                    print("i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "
-                                "test_count_loss: %.2f, test_image_loss: %.2f" %
+                    print_string = 
+                        "i: %d, train_count_loss: %.2f, train_image_loss: %.2f, "\
+                        "test_count_loss: %.2f, test_image_loss: %.2f" %\
                           (i, tcount_diff, timage_loss_v, count_diff, image_loss_v))
+
+                    print(print_string)
+                   
+                    file_io.save_string(print_string, 
+                            self.model_params["train_log_dir"] + 
+                            self.model_params["string_log_name"])
 
                     self.sum_writer.add_summary(summ_v, i)
                     sf.add_value_sum(self.sum_writer, timage_loss_v, 
