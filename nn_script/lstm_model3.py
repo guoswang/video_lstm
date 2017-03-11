@@ -274,7 +274,9 @@ class Model(ModelAbs):
             count_infer_list = list()
 
             for i in range(unroll_num):
-                count_label = tf.reduce_sum(label[i], [1,2,3])/desmap_scale
+                masked_label = self._filter_mask(label[i], mask[i])
+
+                count_label = tf.reduce_sum(masked_label, [1,2,3])/desmap_scale
                 count_infer = tf.reduce_sum(self.count[i], 1)
                 
                 count_label_list.append(count_label)
