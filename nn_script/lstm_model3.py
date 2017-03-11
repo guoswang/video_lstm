@@ -16,6 +16,7 @@ class Model(ModelAbs):
 
         input_ph_list = data_ph.get_input()
         label_ph_list = data_ph.get_label()
+        mask_ph_list = data_ph.get_mask()
 
         predict_list, fc_list = self._model_infer_cnn(data_ph, model_params)
 
@@ -33,7 +34,7 @@ class Model(ModelAbs):
 
         self.output = output
 
-        count = self._model_infer_to_count(output, model_params)
+        count = self._model_infer_to_count(output, mask_ph_list, model_params)
         self.count = count
     
     def _model_infer_cnn(self, data_ph, model_params):
@@ -183,7 +184,7 @@ class Model(ModelAbs):
         tensor = tensor * mask
         return tensor
     
-    def _model_infer_to_count(self, lstm_output, model_params):
+    def _model_infer_to_count(self, lstm_output, mask_list, model_params):
         wd = model_params["weight_decay"]
         desmap_scale = model_params["desmap_scale"]
 
@@ -199,8 +200,9 @@ class Model(ModelAbs):
                             wd, name='bias_decay_%d'%i)
                 tf.add_to_collection("losses", count_bias_decay)
 
+                pred_img = self._filter_mask(self.predict_list[i][-1], mask_list[i])
                 image_sum = tf.expand_dims(tf.reduce_sum(
-                                self.predict_list[i][-1], [1,2,3]),1)/desmap_scale
+                                pred_img, [1,2,3]),1)/desmap_scale
 
                 count = count_bias + image_sum
 
