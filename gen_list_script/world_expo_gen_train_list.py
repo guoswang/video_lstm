@@ -1,8 +1,6 @@
 from TensorflowToolbox.utility import file_io
 
 
-video_analysis_train_list = "/Users/Geoff/Documents/my_git/video_analysis/file_list/world_expo_train_list1.txt"
-
 def file_list_to_list(file_list, unroll_num):
     start_index = unroll_num
     end_index = len(file_list)
@@ -31,13 +29,13 @@ if __name__ == "__main__":
 
     for i in range(2):
         if i == 0:
-            fiie_list_name = "/Users/Geoff/Documents/my_git/video_analysis/file_list/world_expo_train_list1.txt"
+            file_list_name = "/home/shanghang/video_analysis/file_list/world_expo_train_list1.txt"
             save_file_name = "../file_list/world_expo_train_list1.txt"
         else:
-            fiie_list_name = "/Users/Geoff/Documents/my_git/video_analysis/file_list/world_expo_test_list1.txt"
+            file_list_name = "/home/shanghang/video_analysis/file_list/world_expo_test_list1.txt"
             save_file_name = "../file_list/world_expo_test_list1.txt"
 
-        file_list = file_io.read_file(video_analysis_train_list)
+        file_list = file_io.read_file(file_list_name)
         file_list.sort()
         unrolled_list = list()
 
@@ -51,5 +49,6 @@ if __name__ == "__main__":
                     new_list = file_list_to_list(file_list[start_i:i], unroll_num)
                     unrolled_list += new_list
         unrolled_list = [reorder_str(f) for f in unrolled_list]
-        file_io.save_file(unrolled_list, save_file_name)
+        file_io.save_file(unrolled_list, save_file_name, True)
+
 
