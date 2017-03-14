@@ -193,7 +193,8 @@ class NetFlow(object):
                             for f in self.file_line]
 
                 file_line = result_obj.vectorize_list(file_line)
-                save_density_map(file_line, infer_density_map_v)
+                save_density_map(file_line, infer_density_map_v, 
+                        unroll_num, desmap_scale)
 
                 label_count_v = result_obj.vectorize_nparray(label_count_v)
                 count_v = result_obj.vectorize_nparray(count_v)
