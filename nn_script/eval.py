@@ -10,7 +10,7 @@ if __name__ == "__main__":
         model_proto_file = "model.tfproto"
 
     model_params = rp.load_proto(model_proto_file)
-    model_params['restore_model'] = False
+    model_params['restore_model'] = True
 
     file_io.check_exist(model_params["test_file_name"]) 
 

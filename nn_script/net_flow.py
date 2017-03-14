@@ -188,9 +188,6 @@ class NetFlow(object):
                 loss_v, count_v, label_count_v, infer_density_map_v = \
                         sess.run([self.loss, self.count, \
                         self.label_count, self.infer_density_map], feed_dict)
-                print(infer_density_map_v)
-                print(len(infer_density_map_v))
-                print(infer_density_map_v[0][-1].shape)
 
                 file_line = [f.decode("utf-8").split(" ")[:unroll_num] \
                             for f in self.file_line]

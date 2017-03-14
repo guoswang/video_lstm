@@ -5,7 +5,6 @@ def save_density_map(file_list, density_map_list):
     for b in range(batch):
         for i in range(5):
             new_file_name = file_list[j].replace(".jpg", ".infer_desmap")
-            print(new_file_name)
             density_map_list[i][-1][b,:,:,:].tofile(new_file_name)
             j += 1
 
