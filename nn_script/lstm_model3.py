@@ -348,4 +348,7 @@ class Model(ModelAbs):
 
     def get_label_count(self):
         return self.count_label_list
+    
+    def get_infer_density_map(self):
+        return self.predict_list
 

@@ -9,6 +9,8 @@ import cv2
 import numpy as np
 import os
 
+from save_density_map import save_density_map
+
 TF_VERSION = tf.__version__.split(".")[1]
 
 
@@ -36,6 +38,7 @@ class NetFlow(object):
         self.label_count = self.model.get_label_count()
         self.image_loss = self.model.get_image_loss()
         self.train_op = self.model.get_train_op()
+        self.infer_density_map = self.model.get_infer_density_map()
 
     @staticmethod
     def check_model_params(model_params):
@@ -182,13 +185,18 @@ class NetFlow(object):
             result_obj = ro.ResultObj(result_file_name)
             for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
-                loss_v, count_v, label_count_v = sess.run([self.loss, self.count, 
-                        self.label_count], feed_dict)
+                loss_v, count_v, label_count_v, infer_density_map_v = \
+                        sess.run([self.loss, self.count, \
+                        self.label_count, self.infer_density_map], feed_dict)
+                print(infer_density_map_v)
+                print(len(infer_density_map_v))
+                print(infer_density_map_v[0][-1].shape)
 
                 file_line = [f.decode("utf-8").split(" ")[:unroll_num] \
                             for f in self.file_line]
 
                 file_line = result_obj.vectorize_list(file_line)
+                save_density_map(file_line, infer_density_map_v)
 
                 label_count_v = result_obj.vectorize_nparray(label_count_v)
                 count_v = result_obj.vectorize_nparray(count_v)
@@ -197,6 +205,7 @@ class NetFlow(object):
                 count_v = result_obj.float_to_str(count_v, "%.2f")
 
                 result_obj.add_to_list(file_line, label_count_v, count_v)
+
 
             result_obj.save_to_file(True)
 
