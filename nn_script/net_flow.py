@@ -178,6 +178,12 @@ class NetFlow(object):
                                   self.model_params["model_dir"],i)
                     
         else:
+            if "save_desmap" in self.model_params and self.model_params["save_desmap"]:
+                save_desmap = True
+            else
+                save_desmap = False
+
+
             file_len = file_io.get_file_length(self.model_params["test_file_name"])
             batch_size = self.model_params["batch_size"]
             test_iter = int(file_len / batch_size) + 1
@@ -193,8 +199,10 @@ class NetFlow(object):
                             for f in self.file_line]
 
                 file_line = result_obj.vectorize_list(file_line)
-                save_density_map(file_line, infer_density_map_v, 
-                        unroll_num, desmap_scale)
+
+                if save_desmap:
+                    save_density_map(file_line, infer_density_map_v, 
+                            unroll_num, desmap_scale)
 
                 label_count_v = result_obj.vectorize_nparray(label_count_v)
                 count_v = result_obj.vectorize_nparray(count_v)

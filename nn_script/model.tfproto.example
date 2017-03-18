@@ -66,6 +66,7 @@ string_log_name: string_logs.txt
 model_dir:models/
 restore_model:False
 restore_model_name:None
+save_desmap:True
 
 # define the fraction of gpu
 gpu_fraction: 0.2
