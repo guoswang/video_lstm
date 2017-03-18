@@ -180,7 +180,7 @@ class NetFlow(object):
         else:
             if "save_desmap" in self.model_params and self.model_params["save_desmap"]:
                 save_desmap = True
-            else
+            else:
                 save_desmap = False
 
 
