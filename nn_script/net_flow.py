@@ -8,6 +8,7 @@ from TensorflowToolbox.utility import result_obj as ro
 import cv2
 import numpy as np
 import os
+import time
 
 from save_density_map import save_density_map
 
@@ -189,6 +190,8 @@ class NetFlow(object):
             test_iter = int(file_len / batch_size) + 1
             result_file_name = self.model_params["result_file_name"]
             result_obj = ro.ResultObj(result_file_name)
+
+            start = time.time()
             for i in range(test_iter):
                 feed_dict = self.get_feed_dict(sess, is_train=False)
                 loss_v, count_v, label_count_v, infer_density_map_v = \
@@ -199,6 +202,7 @@ class NetFlow(object):
                             for f in self.file_line]
 
                 file_line = result_obj.vectorize_list(file_line)
+                print(file_line[0])
 
                 if save_desmap:
                     save_density_map(file_line, infer_density_map_v, 
@@ -211,6 +215,9 @@ class NetFlow(object):
                 count_v = result_obj.float_to_str(count_v, "%.2f")
 
                 result_obj.add_to_list(file_line, label_count_v, count_v)
+                
+            elapsed = time.time() - start
+            print("total time is:", elapsed, "average time is:", elapsed/test_iter)
 
 
             result_obj.save_to_file(True)
