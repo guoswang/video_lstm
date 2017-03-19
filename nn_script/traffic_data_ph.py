@@ -11,7 +11,8 @@ class DataPh(DataPhAbs):
 
         for i in range(unroll_num): 
             input_ph = tf.placeholder(tf.float32, shape=[
-                model_params["batch_size"],
+                None,
+                #model_params["batch_size"],
                 model_params["feature_ph_row"],
                 model_params["feature_ph_col"],
                 model_params["feature_cha"]],
@@ -21,7 +22,8 @@ class DataPh(DataPhAbs):
 
         for i in range(unroll_num): 
             label_ph = tf.placeholder(tf.float32, shape=[
-                model_params["batch_size"],
+                None,
+                #model_params["batch_size"],
                 model_params["label_ph_row"],
                 model_params["label_ph_col"],
                 model_params["label_cha"]],
@@ -30,7 +32,8 @@ class DataPh(DataPhAbs):
 
         for i in range(unroll_num): 
             mask_ph = tf.placeholder(tf.float32, shape=[
-                model_params["batch_size"],
+                None,
+                #model_params["batch_size"],
                 model_params["mask_ph_row"],
                 model_params["mask_ph_col"],
                 model_params["mask_cha"]],
