@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 from TensorflowToolbox.utility import file_io
 import sys
 import numpy as np
